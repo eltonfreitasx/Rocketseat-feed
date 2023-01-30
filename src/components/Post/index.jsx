@@ -26,12 +26,18 @@ export function Post({ author, publishedAt, content }) {
 
   function handleCreateNewCommet(e) {
     e.preventDefault();
-
-
-
     setComments([...comments, newCommentText]);
+  }
 
-   
+  function deleteComment(commentToDelete) {
+    //imutabilidade -> as coisas não sofrem mutação
+    //criamos um novo valor (novo espaço na memoria)
+    const commentsWithouDeleteOne = comments.filter(comment => {
+      return comment != commentToDelete;
+    })
+
+    setComments(commentsWithouDeleteOne);
+    console.log(`deletando ${commentsWithouDeleteOne}`)
   }
 
   function handleNewCommentChange(e) {
@@ -60,10 +66,10 @@ export function Post({ author, publishedAt, content }) {
       <div className={styles.content}>
         {content.map((line) => {
           if (line.type === "paragraph") {
-            return <p>{line.content}</p>;
+            return <p key={line.content}>{line.content}</p>;
           } else if (line.type === "link") {
             return (
-              <p>
+              <p key={line.content}>
                 <a href="#">{line.content}</a>
               </p>
             );
@@ -74,11 +80,11 @@ export function Post({ author, publishedAt, content }) {
       <form onSubmit={handleCreateNewCommet} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
 
-        <textarea 
-         name="comment"
-         placeholder="Deixe um comentário" 
-         onChange={handleNewCommentChange}
-         />
+        <textarea
+          name="comment"
+          placeholder="Deixe um comentário"
+          onChange={handleNewCommentChange}
+        />
 
         <footer>
           <button type="submit">Publicar</button>
@@ -87,7 +93,7 @@ export function Post({ author, publishedAt, content }) {
 
       <div className={styles.commentList}>
         {comments.map((comment) => {
-          return <Comment content= {comment}/>;
+          return <Comment key={comment} content={comment} OnDeleteComment={deleteComment} />;
         })}
       </div>
     </article>
